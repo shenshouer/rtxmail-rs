@@ -7,7 +7,6 @@ use async_trait::async_trait;
 use reqwest::Method;
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use serde_json::{json, Value};
-use std::ops::Add;
 
 const BASE_URL: &str = "https://api.exmail.qq.com";
 

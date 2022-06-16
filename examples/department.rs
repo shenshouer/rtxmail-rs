@@ -1,9 +1,6 @@
 use anyhow::Result;
 use dotenv::dotenv;
-use rtxmail::{
-    client::{self, Exmailer},
-    Client,
-};
+use rtxmail::{client::Exmailer, Client};
 use std::env;
 
 #[tokio::main]
