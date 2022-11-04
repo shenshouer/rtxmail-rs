@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 /// 部门
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Department {
     id: u64,
     name: String,
@@ -13,7 +13,7 @@ pub struct Department {
 }
 
 /// 用户
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct User {
     #[serde(rename = "userid")]
     user_id: String,
@@ -28,7 +28,7 @@ pub struct User {
 }
 
 /// 用户检查数据
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct UserCheck {
     user: String,
     #[serde(rename = "type")]
@@ -43,7 +43,7 @@ pub struct UserCheck {
 /// "department": [1, 2],
 /// "allow_type": 3,
 /// "allow_userlist": ["zhangsanp@gzdev.com"]
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Group {
     /// 	邮件群组id，邮件格式
     groupid: String,
