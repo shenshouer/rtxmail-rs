@@ -16,15 +16,15 @@ pub struct Department {
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct User {
     #[serde(rename = "userid")]
-    user_id: String,
-    name: String,
-    department: Vec<u64>,
-    position: String,
-    mobile: String,
-    gender: Option<String>,
-    enable: u8,
-    slaves: Vec<String>,
-    cpwd_login: Option<u8>,
+    pub user_id: String,
+    pub name: String,
+    pub department: Vec<u64>,
+    pub position: String,
+    pub mobile: String,
+    pub gender: Option<String>,
+    pub enable: u8,
+    pub slaves: Vec<String>,
+    pub cpwd_login: Option<u8>,
 }
 
 /// 用户检查数据
