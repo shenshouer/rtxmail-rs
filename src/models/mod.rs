@@ -3,13 +3,13 @@ use serde::{Deserialize, Serialize};
 /// 部门
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Department {
-    id: u64,
-    name: String,
+    pub id: u64,
+    pub name: String,
     #[serde(rename = "parentid")]
-    parent_id: u64,
-    order: u32,
+    pub parent_id: u64,
+    pub order: u32,
     #[serde(skip_serializing_if = "Option::is_none")]
-    path: Option<String>,
+    pub path: Option<String>,
 }
 
 /// 用户
@@ -30,9 +30,9 @@ pub struct User {
 /// 用户检查数据
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct UserCheck {
-    user: String,
+    pub user: String,
     #[serde(rename = "type")]
-    kind: u8,
+    pub kind: u8,
 }
 
 /// 群组数据
@@ -46,17 +46,17 @@ pub struct UserCheck {
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct Group {
     /// 	邮件群组id，邮件格式
-    groupid: String,
+    pub groupid: String,
     /// 	邮件群组名称
-    groupname: String,
+    pub groupname: String,
     /// 	成员帐号
-    userlist: Vec<String>,
+    pub userlist: Vec<String>,
     /// 	成员邮件群组
-    grouplist: Vec<String>,
+    pub grouplist: Vec<String>,
     /// 	成员部门
-    department: Vec<u64>,
+    pub department: Vec<u64>,
     /// 	群发权限。0: 企业成员, 1任何人， 2:组内成员，3:指定成员
-    allow_type: u8,
+    pub allow_type: u8,
     /// 	群发权限为指定成员时，需要指定成员，否则赋值失效
-    allow_userlist: Vec<String>,
+    pub allow_userlist: Vec<String>,
 }
