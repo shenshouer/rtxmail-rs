@@ -9,7 +9,11 @@ async fn main() -> Result<()> {
 
     let corp_id = env::var("CORP_ID")?;
     let corp_secret = env::var("CORP_SECRET")?;
-    let c = Client::new(corp_id, corp_secret);
+    let c = Client::new(
+        corp_id,
+        corp_secret,
+        Some(tokio::time::Duration::from_millis(500)),
+    );
 
     // 查找部门
     // let params = client::ParamsSerchDepartment {
@@ -19,8 +23,8 @@ async fn main() -> Result<()> {
     // let resp = c.search_department(params).await?;
 
     // 获取部门列表
-    // let resp = c.list_department(None).await?;
-    // println!("{}", serde_json::to_string(&resp)?);
+    let resp = c.list_department(None).await?;
+    println!("{}", serde_json::to_string(&resp)?);
 
     // 创建部门
     // let params = client::ParamsCreateDepartment {
@@ -57,9 +61,8 @@ async fn main() -> Result<()> {
     //     ])
     //     .await?;
 
-    let resp = c.get_group("devops@xxx.com").await?;
-
-    println!("{}", serde_json::to_string(&resp)?);
+    // let resp = c.get_group("devops@xxx.com").await?;
+    // println!("{}", serde_json::to_string(&resp)?);
 
     Ok(())
 }

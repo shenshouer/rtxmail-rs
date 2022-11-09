@@ -9,7 +9,11 @@ async fn main() -> Result<()> {
 
     let corp_id = env::var("CORP_ID")?;
     let corp_secret = env::var("CORP_SECRET")?;
-    let c = Client::new(corp_id, corp_secret);
+    let c = Client::new(
+        corp_id,
+        corp_secret,
+        Some(tokio::time::Duration::from_millis(500)),
+    );
 
     // 根据uid获取用户
     let resp = c.get_user("shenshouer2955@xxx.com").await;

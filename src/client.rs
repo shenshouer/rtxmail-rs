@@ -7,6 +7,7 @@ use async_trait::async_trait;
 use reqwest::Method;
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use serde_json::{json, Value};
+use tokio::time::Duration;
 
 const BASE_URL: &str = "https://api.exmail.qq.com";
 
@@ -14,6 +15,8 @@ const BASE_URL: &str = "https://api.exmail.qq.com";
 pub struct Client {
     pub(crate) corp_id: String,
     pub(crate) corp_secret: String,
+    /// 延时请求时间
+    pub(crate) interval: Option<Duration>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -23,11 +26,16 @@ struct Token {
 }
 
 impl Client {
-    pub fn new(corp_id: String, corp_secret: String) -> Client {
+    pub fn new(corp_id: String, corp_secret: String, interval: Option<Duration>) -> Client {
         Client {
             corp_id,
             corp_secret,
+            interval,
         }
+    }
+
+    pub fn with_interval(&mut self, interval: Duration) {
+        self.interval = Some(interval);
     }
 
     async fn access_token(&self) -> Result<String> {
@@ -62,6 +70,10 @@ impl Client {
         } else {
             None
         };
+        // 执行延时请求
+        if let Some(interval) = self.interval {
+            tokio::time::sleep(interval).await;
+        }
         let resp = do_http(method, url, None, None, body)
             .await?
             .json::<R>()
