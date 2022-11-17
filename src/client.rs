@@ -7,6 +7,8 @@ use async_trait::async_trait;
 use reqwest::Method;
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use serde_json::{json, Value};
+use std::sync::Arc;
+use tokio::sync::Mutex;
 use tokio::time::Duration;
 
 const BASE_URL: &str = "https://api.exmail.qq.com";
@@ -17,12 +19,15 @@ pub struct Client {
     pub(crate) corp_secret: String,
     /// 延时请求时间
     pub(crate) interval: Option<Duration>,
+    /// 缓存token
+    token: Arc<Mutex<Option<Token>>>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 struct Token {
-    access_token: String,
-    expires_in: u32,
+    pub access_token: String,
+    pub create_at: Option<u64>,
+    pub expires_in: u64,
 }
 
 impl Client {
@@ -31,6 +36,7 @@ impl Client {
             corp_id,
             corp_secret,
             interval,
+            token: Arc::new(Mutex::new(None)),
         }
     }
 
@@ -39,6 +45,28 @@ impl Client {
     }
 
     async fn access_token(&self) -> Result<String> {
+        let mut old_token = self.token.lock().await;
+
+        let s = match &mut *old_token {
+            Some(x) => {
+                let expires_at = x.expires_in + x.create_at.unwrap();
+                if expires_at < get_current_duration().as_secs() {
+                    *x = self.request_access_token().await?;
+                }
+                x.access_token.clone()
+            }
+            None => {
+                let new_token = self.request_access_token().await?;
+                let s = new_token.access_token.clone();
+                *old_token = Some(new_token);
+                s
+            }
+        };
+
+        Ok(s)
+    }
+
+    async fn request_access_token(&self) -> Result<Token> {
         let query_body = json!({
             "corpid": self.corp_id,
             "corpsecret": self.corp_secret,
@@ -53,9 +81,10 @@ impl Client {
         )
         .await?;
 
-        let data = resp.json::<Token>().await?;
-
-        Ok(data.access_token)
+        let mut data = resp.json::<Token>().await?;
+        data.expires_in = 2;
+        data.create_at = Some(get_current_duration().as_secs());
+        Ok(data)
     }
 
     // http 请求
@@ -439,4 +468,12 @@ pub mod tests {
             println!("{:?}", r);
         }
     }
+}
+
+use std::time::{SystemTime, UNIX_EPOCH};
+fn get_current_duration() -> Duration {
+    let start = SystemTime::now();
+    start
+        .duration_since(UNIX_EPOCH)
+        .expect("Time went backwards")
 }

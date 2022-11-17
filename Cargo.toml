@@ -1,6 +1,6 @@
 [package]
 name = "rtxmail"
-version = "0.1.5"
+version = "0.1.6"
 edition = "2021"
 description = "腾讯企业邮箱rust版本sdk"
 license = "MIT OR Apache-2.0"
@@ -8,7 +8,7 @@ repository = "https://github.com/shenshouer/rtxmail-rs"
 keywords = ["email"]
 
 [dependencies]
-reqwest = { version = "0.11.11", features = ["json"] }
+reqwest = { version = "0.11.11", features = ["json", "native-tls"] }
 tokio = { version = "1.19.2", features = ["full"] }
 tracing = "0.1.35"
 serde = { version = "1.0", features = ["derive"] }
@@ -19,3 +19,5 @@ async-trait = "0.1.56"
 [dev-dependencies]
 anyhow = "1.0.57"
 dotenv = "0.15.0"
+async-recursion = "1"
+tracing-subscriber = { version = "0.3", features = ["fmt", "local-time", "std", "env-filter"]}
